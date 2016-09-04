@@ -12,6 +12,8 @@ var paddleHeight = 10;
 var paddleWidth = 75;
 var paddleX = (canvas.width - paddleWidth) / 2;
 
+var score = 0;
+
 var rightPressed = false;
 var leftPressed = false;
 
@@ -62,10 +64,22 @@ function collisionDetection() {
             if (b.status == 1) {
                 if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
                     dy = -dy;
+                    b.status = 0;
+                    score++;
+                    if (score == brickColumnCount * brickRowCount) {
+                        alert("Congratulations, you won!");
+                        document.location.reload();
+                    }
                 }
             }
         }
     }
+}
+
+function displayScore() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "blue";
+    ctx.fillText("Score: " + score, 8, 20);
 }
 
 function drawBall() {
@@ -109,6 +123,7 @@ function draw() {
     drawBricks();
     drawBall();
     drawPaddle();
+    displayScore();
     collisionDetection();
     //Collision system - ball bouncing off the walls
     if (x + dx < 0 + ballRadius || x + dx > canvas.width - ballRadius) {
