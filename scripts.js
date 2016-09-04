@@ -15,6 +15,25 @@ var paddleX = (canvas.width - paddleWidth) / 2;
 var rightPressed = false;
 var leftPressed = false;
 
+var brickRowCount = 3;
+var brickColumnCount = 5;
+var brickWidth = 75;
+var brickHeight = 20;
+var brickPadding = 10;
+var brickOffsetTop = 30;
+var brickOffsetLeft = 30;
+
+var bricks = [];
+for (c = 0; c < brickColumnCount; c++) {
+    bricks[c] = [];
+    for (r = 0; r < brickRowCount; r++) {
+        bricks[c][r] = {
+            x: 0,
+            y: 0
+        };
+    }
+}
+
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
@@ -51,17 +70,44 @@ function drawPaddle() {
     ctx.closePath();
 }
 
+function drawBricks() {
+    for (c = 0; c < brickColumnCount; c++) {
+        for (r = 0; r < brickRowCount; r++) {
+            var brickX = (c * (brickWidth + brickPadding)) + brickOffsetLeft;
+            var brickY = (r * (brickHeight + brickPadding)) + brickOffsetTop;
+            bricks[c][r].x = brickX;
+            bricks[c][r].y = brickY;
+            ctx.beginPath();
+            ctx.rect(brickX, brickY, brickWidth, brickHeight);
+            ctx.fillStyle = "blue";
+            ctx.fill();
+            ctx.closePath();
+        }
+    }
+}
+
 //Define Drawing Loop to update the drawing of each frame
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawBricks();
     drawBall();
     drawPaddle();
     //Collision system - ball bouncing off the walls
     if (x + dx < 0 + ballRadius || x + dx > canvas.width - ballRadius) {
         dx = -dx;
     }
-    if (y + dy < 0 + ballRadius || y + dy > canvas.height - ballRadius) {
+    /*if (y + dy < 0 + ballRadius || y + dy > canvas.height - ballRadius) {
         dy = -dy;
+    }*/
+    if (y + dy < 0 + ballRadius) {
+        dy = -dy;
+    } else if (y + dy > canvas.height - ballRadius) {
+        if (x > paddleX && x < paddleX + paddleWidth) {
+            dy = -dy;
+        } else {
+            alert("Game Over. You lose.");
+            document.location.reload();
+        }
     }
     //Controlling the paddle movement
     if (rightPressed && paddleX < canvas.width - paddleWidth) {
