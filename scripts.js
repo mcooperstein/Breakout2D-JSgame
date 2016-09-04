@@ -13,6 +13,7 @@ var paddleWidth = 75;
 var paddleX = (canvas.width - paddleWidth) / 2;
 
 var score = 0;
+var lives = 3;
 
 var rightPressed = false;
 var leftPressed = false;
@@ -67,7 +68,7 @@ function collisionDetection() {
                     b.status = 0;
                     score++;
                     if (score == brickColumnCount * brickRowCount) {
-                        alert("Congratulations, you won!");
+                        alert("Congratulations, you won and still had " + lives + " live(s) remaining!");
                         document.location.reload();
                     }
                 }
@@ -80,6 +81,12 @@ function displayScore() {
     ctx.font = "16px Arial";
     ctx.fillStyle = "blue";
     ctx.fillText("Score: " + score, 8, 20);
+}
+
+function displayLives() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "red";
+    ctx.fillText("Lives Remaining: " + lives, 8, 40);
 }
 
 function drawBall() {
@@ -124,6 +131,7 @@ function draw() {
     drawBall();
     drawPaddle();
     displayScore();
+    displayLives();
     collisionDetection();
     //Collision system - ball bouncing off the walls
     if (x + dx < 0 + ballRadius || x + dx > canvas.width - ballRadius) {
@@ -138,8 +146,18 @@ function draw() {
         if (x > paddleX && x < paddleX + paddleWidth) {
             dy = -dy;
         } else {
-            alert("Game Over. You lose.");
-            document.location.reload();
+            lives--;
+            if (!lives) {
+                alert("Game Over, You Lose!");
+                document.location.reload();
+            } else {
+                x = canvas.width / 2;
+                y = canvas.height - 30;
+                dx = 2;
+                dy = -2;
+                paddleX = (canvas.width - paddleWidth) / 2;
+            }
+            //Above else executes if player still has lives remaining, and resets the position of the ball and paddle
         }
     }
     //Controlling the paddle movement
