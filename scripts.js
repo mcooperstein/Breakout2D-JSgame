@@ -86,7 +86,7 @@ function displayScore() {
 function displayLives() {
     ctx.font = "16px Arial";
     ctx.fillStyle = "red";
-    ctx.fillText("Lives Remaining: " + lives, 8, 40);
+    ctx.fillText("Lives Remaining: " + lives, 330, 20);
 }
 
 function drawBall() {
